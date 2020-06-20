@@ -1,0 +1,22 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# https://www.codeandweb.com/texturepacker/unity
+#
+# $TexturePacker:SmartUpdate:4900f1f54aaf2bd11ecf4911a3347151:4f56a6be03eb4431479ca7db9d7761ae:6af262616af1ba9e885928c4c0696b3b$
+#
+:format=40300
+:texture=Gems.png
+:size=512x1024
+:pivotpoints=enabled
+:borders=disabled
+:alphahandling=ClearTransparentPixels
+
+characters_0001;1;342;216;230; 0.5;0.5; 0;0;0;0
+characters_0002;223;574;208;237; 0.5;0.5; 0;0;0;0
+characters_0003;1;589;220;222; 0.5;0.5; 0;0;0;0
+characters_0004;219;353;238;219; 0.5;0.5; 0;0;0;0
+characters_0005;1;94;236;246; 0.5;0.5; 0;0;0;0
+characters_0006;1;821;210;202; 0.5;0.5; 0;0;0;0
+characters_0007;213;813;210;210; 0.5;0.5; 0;0;0;0
