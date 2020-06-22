@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using EasyButtons;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class Cell : MonoBehaviour {
     private Board board;
     private Dimensions boardDim;
     private Dimensions cellDim;
+    public GameObject cellGem;
     public GameObject cellGemPrefab;
     public int cellIndex;
     public int columnIndex;
@@ -39,7 +41,7 @@ public class Cell : MonoBehaviour {
     }
 
     void AddCellGem() {
-        GameObject cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
+        cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
         cellGem.transform.localPosition = Vector3.zero;
         SetGem(cellGem);
     }
@@ -48,5 +50,26 @@ public class Cell : MonoBehaviour {
         Gem gem = board.GetGem();
         cellGem.GetComponent<Image>().sprite = gem.sprite;
         cellGem.tag = gem.gemType.ToString();
+    }
+
+    public void SetCellGem(GameObject cellGem) {
+        this.cellGem = cellGem;
+        this.cellGem.GetComponent<CellGem>().SetParent(transform);
+    }
+
+    [Button] void MoveDown() {
+        board.SwapGems(columnIndex, cellIndex, Direction.DOWN);
+    }
+
+    [Button] void MoveLeft() {
+        board.SwapGems(columnIndex, cellIndex, Direction.LEFT);
+    }
+
+    [Button] void MoveRight() {
+        board.SwapGems(columnIndex, cellIndex, Direction.RIGHT);
+    }
+
+    [Button] void MoveUp() {
+        board.SwapGems(columnIndex, cellIndex, Direction.UP);
     }
 }

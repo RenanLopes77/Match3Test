@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Direction {
+    DOWN,
+    LEFT,
+    RIGHT,
+    UP,
+}
+
 public class Board : MonoBehaviour {
     private Dimensions boardDim;
     private Dimensions cellDim;
@@ -53,5 +60,42 @@ public class Board : MonoBehaviour {
     public Gem GetGem() {
         int index = Random.Range(0, gems.Count - 1);
         return gems[index];
+    }
+
+    public void SwapGems(int columnIndex, int cellIndex, Direction direction) {
+        Cell currentCell = boardGrid[columnIndex, cellIndex].GetComponent<Cell>();
+        Cell nextCell = null;
+        switch (direction) {
+            case Direction.DOWN:
+                if (cellIndex > 0) {
+                    Debug.Log("MoveDown");
+                    nextCell = boardGrid[columnIndex, cellIndex - 1].GetComponent<Cell>();
+                }
+                break;
+            case Direction.LEFT:
+                if (columnIndex > 0) {
+                    Debug.Log("MoveLeft");
+                    nextCell = boardGrid[columnIndex - 1, cellIndex].GetComponent<Cell>();
+                }
+                break;
+            case Direction.RIGHT:
+                if (columnIndex < columns - 1) {
+                    Debug.Log("MoveRight");
+                    nextCell = boardGrid[columnIndex + 1, cellIndex].GetComponent<Cell>();
+                }
+                break;
+            case Direction.UP:
+                if (cellIndex < cells - 1) {
+                    Debug.Log("MoveUp");
+                    nextCell = boardGrid[columnIndex, cellIndex + 1].GetComponent<Cell>();
+                }
+                break;
+        }
+        if (currentCell != null && nextCell != null) {
+            GameObject currentCellGem = currentCell.cellGem;
+            GameObject nextCellGem = nextCell.cellGem;
+            currentCell.SetCellGem(nextCellGem);
+            nextCell.SetCellGem(currentCellGem);
+        }
     }
 }
