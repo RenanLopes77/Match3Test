@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Cell
+  - Column
+  - Board
+  - Apple
+  - Bread
+  - Broccoli
+  - Coconut
+  - Milk
+  - Orange
+  - Star
   layers:
   - Default
   - TransparentFX
