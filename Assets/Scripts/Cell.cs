@@ -57,36 +57,36 @@ public class Cell : MonoBehaviour {
         this.cellGem.GetComponent<CellGem>().SetParent(transform);
     }
 
-    public void Move(Direction direction) {
+    public void Move(DirectionEnum direction) {
         switch (direction) {
-            case Direction.DOWN:
+            case DirectionEnum.DOWN:
                 MoveDown();
                 break;
-            case Direction.LEFT:
+            case DirectionEnum.LEFT:
                 MoveLeft();
                 break;
-            case Direction.RIGHT:
+            case DirectionEnum.RIGHT:
                 MoveRight();
                 break;
-            case Direction.UP:
+            case DirectionEnum.UP:
                 MoveUp();
                 break;
         }
     }
 
     [Button] public void MoveDown() {
-        board.SwapGems(columnIndex, cellIndex, Direction.DOWN);
+        board.SwapGems(columnIndex, cellIndex, DirectionEnum.DOWN);
     }
 
     [Button] public void MoveLeft() {
-        board.SwapGems(columnIndex, cellIndex, Direction.LEFT);
+        board.SwapGems(columnIndex, cellIndex, DirectionEnum.LEFT);
     }
 
     [Button] public void MoveRight() {
-        board.SwapGems(columnIndex, cellIndex, Direction.RIGHT);
+        board.SwapGems(columnIndex, cellIndex, DirectionEnum.RIGHT);
     }
 
     [Button] public void MoveUp() {
-        board.SwapGems(columnIndex, cellIndex, Direction.UP);
+        board.SwapGems(columnIndex, cellIndex, DirectionEnum.UP);
     }
 }
