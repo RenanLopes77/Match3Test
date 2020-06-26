@@ -57,19 +57,36 @@ public class Cell : MonoBehaviour {
         this.cellGem.GetComponent<CellGem>().SetParent(transform);
     }
 
-    [Button] void MoveDown() {
+    public void Move(Direction direction) {
+        switch (direction) {
+            case Direction.DOWN:
+                MoveDown();
+                break;
+            case Direction.LEFT:
+                MoveLeft();
+                break;
+            case Direction.RIGHT:
+                MoveRight();
+                break;
+            case Direction.UP:
+                MoveUp();
+                break;
+        }
+    }
+
+    [Button] public void MoveDown() {
         board.SwapGems(columnIndex, cellIndex, Direction.DOWN);
     }
 
-    [Button] void MoveLeft() {
+    [Button] public void MoveLeft() {
         board.SwapGems(columnIndex, cellIndex, Direction.LEFT);
     }
 
-    [Button] void MoveRight() {
+    [Button] public void MoveRight() {
         board.SwapGems(columnIndex, cellIndex, Direction.RIGHT);
     }
 
-    [Button] void MoveUp() {
+    [Button] public void MoveUp() {
         board.SwapGems(columnIndex, cellIndex, Direction.UP);
     }
 }

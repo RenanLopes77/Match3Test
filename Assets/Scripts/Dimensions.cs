@@ -1,3 +1,4 @@
+[System.Serializable]
 public class Dimensions {
   public float height;
   public float width;
