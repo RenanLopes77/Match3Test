@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ae4f62106f2804ab86f18148a29cfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellIndex: 0
-  columnIndex: 0
+  cellGem: {fileID: 0}
   cellGemPrefab: {fileID: 8027938251479138554, guid: 156cdf995e80bca4eb9e2a4ac7cf867b,
     type: 3}
-  board: {fileID: 0}
+  cellIndex: 0
+  columnIndex: 0
