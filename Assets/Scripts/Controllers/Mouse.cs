@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MouseController : SwipeController {
+public class Mouse : Swipe {
 
     void Update() {
         HandleInputMouse();

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TouchController : SwipeController {
+public class CustomTouch : Swipe {
 
     void Update() {
         if (Input.touchCount > 0) {
@@ -12,10 +12,10 @@ public class TouchController : SwipeController {
         Touch touch = Input.GetTouch(0);
         switch (touch.phase) {
             case TouchPhase.Began:
-                InterectionBegan(new Vector3(touch.position.x, touch.position.y, 0));
+                InterectionBegan(touch.position);
                 break;
             case TouchPhase.Ended:
-                InterectionEnded(new Vector3(touch.position.x, touch.position.y, 0));
+                InterectionEnded(touch.position);
                 break;
         }
     }

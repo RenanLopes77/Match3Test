@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SwipeController : MonoBehaviour {
+public class Swipe : MonoBehaviour {
     private Cell cell = null;
     private Vector3 initialTouchPos;
     protected float minTouchDistance = 20.0f;
