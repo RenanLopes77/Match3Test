@@ -42,7 +42,8 @@ public class Cell : MonoBehaviour {
 
     void AddCellGem() {
         cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
-        cellGem.transform.localPosition = Vector3.zero;
+        cellGem.transform.localPosition = new Vector3(0, boardDim.height, 0);
+        cellGem.GetComponent<CellGem>().Move(CellGemMovementType.Drop);
         SetGem(cellGem);
     }
 
@@ -52,9 +53,9 @@ public class Cell : MonoBehaviour {
         cellGem.tag = gem.gemType.ToString();
     }
 
-    public void SetCellGem(GameObject cellGem) {
+    public void SetCellGem(GameObject cellGem, CellGemMovementType movementType) {
         this.cellGem = cellGem;
-        this.cellGem.GetComponent<CellGem>().SetParent(transform);
+        this.cellGem.GetComponent<CellGem>().SetParent(transform, movementType);
     }
 
     public void Move(DirectionEnum direction) {

@@ -83,8 +83,8 @@ public class Board : MonoBehaviour {
         if (currentCell != null && nextCell != null) {
             GameObject currentCellGem = currentCell.cellGem;
             GameObject nextCellGem = nextCell.cellGem;
-            currentCell.SetCellGem(nextCellGem);
-            nextCell.SetCellGem(currentCellGem);
+            currentCell.SetCellGem(nextCellGem, CellGemMovementType.SimpleMove);
+            nextCell.SetCellGem(currentCellGem, CellGemMovementType.SimpleMove);
         }
     }
 }
