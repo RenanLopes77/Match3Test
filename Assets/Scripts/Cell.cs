@@ -58,35 +58,6 @@ public class Cell : MonoBehaviour {
     }
 
     public void Move(DirectionEnum direction) {
-        switch (direction) {
-            case DirectionEnum.DOWN:
-                MoveDown();
-                break;
-            case DirectionEnum.LEFT:
-                MoveLeft();
-                break;
-            case DirectionEnum.RIGHT:
-                MoveRight();
-                break;
-            case DirectionEnum.UP:
-                MoveUp();
-                break;
-        }
-    }
-
-    [Button] public void MoveDown() {
-        board.SwapGems(columnIndex, cellIndex, DirectionEnum.DOWN);
-    }
-
-    [Button] public void MoveLeft() {
-        board.SwapGems(columnIndex, cellIndex, DirectionEnum.LEFT);
-    }
-
-    [Button] public void MoveRight() {
-        board.SwapGems(columnIndex, cellIndex, DirectionEnum.RIGHT);
-    }
-
-    [Button] public void MoveUp() {
-        board.SwapGems(columnIndex, cellIndex, DirectionEnum.UP);
+        board.SwapGems(columnIndex, cellIndex, direction);
     }
 }

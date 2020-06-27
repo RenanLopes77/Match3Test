@@ -61,25 +61,21 @@ public class Board : MonoBehaviour {
         switch (direction) {
             case DirectionEnum.DOWN:
                 if (cellIndex > 0) {
-                    Debug.Log("MoveDown");
                     nextCell = boardGrid[columnIndex, cellIndex - 1].GetComponent<Cell>();
                 }
                 break;
             case DirectionEnum.LEFT:
                 if (columnIndex > 0) {
-                    Debug.Log("MoveLeft");
                     nextCell = boardGrid[columnIndex - 1, cellIndex].GetComponent<Cell>();
                 }
                 break;
             case DirectionEnum.RIGHT:
                 if (columnIndex < columns - 1) {
-                    Debug.Log("MoveRight");
                     nextCell = boardGrid[columnIndex + 1, cellIndex].GetComponent<Cell>();
                 }
                 break;
             case DirectionEnum.UP:
                 if (cellIndex < cells - 1) {
-                    Debug.Log("MoveUp");
                     nextCell = boardGrid[columnIndex, cellIndex + 1].GetComponent<Cell>();
                 }
                 break;
