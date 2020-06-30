@@ -292,9 +292,13 @@ MonoBehaviour:
     gemType: 5
   - sprite: {fileID: 526169798568631390, guid: 9021f54e721d4fb41bbab621cbf52f9a, type: 3}
     gemType: 6
-  padding: {x: 100, y: 100}
+  padding: {x: 50, y: 50}
   cells: 6
   columns: 6
+  gridSize: 0
+  matchedCells: []
+  finishedToPlace: 0
+  finishedToMatch: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
