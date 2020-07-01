@@ -16,9 +16,11 @@ public class Board : MonoBehaviour {
     public Vector2 padding;
     public int cells;
     public int columns;
-    public int finishedToMatch = 0;
+    public int finishedHorizontalMatch = 0;
+    public int finishedVerticalMatch = 0;
     public int finishedToPlace = 0;
     public int gridSize;
+    public bool canSwap = false;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -74,7 +76,8 @@ public class Board : MonoBehaviour {
         finishedToPlace += 1;
 
         if (IsFinishedToPlace()) {
-            CheckAllAgain();
+            finishedHorizontalMatch = 0;
+            CheckMatch(Axis.Hotizontal);
         }
     }
 
@@ -82,11 +85,11 @@ public class Board : MonoBehaviour {
         return finishedToPlace == gridSize;
     }
 
-    public void CheckAllAgain() {
-        finishedToMatch = 0;
+    public void CheckMatch(Axis axis) {
+        canSwap = false;
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < cells; j++) {
-                StartCoroutine(boardGrid[i, j].CheckMatchCoroutine());
+                StartCoroutine(boardGrid[i, j].CheckMatchCoroutine(axis));
             }
         }
     }
@@ -95,12 +98,23 @@ public class Board : MonoBehaviour {
         this.matchedCells = this.matchedCells.Concat(matches).ToList();
     }
 
-    public void FinishedToMatch() {
-        finishedToMatch += 1;
+    public void FinishedHorizontalMatch() {
+        finishedHorizontalMatch += 1;
 
-        if (finishedToMatch == gridSize) {
+        if (finishedHorizontalMatch == gridSize) {
+            finishedVerticalMatch = 0;
+            CheckMatch(Axis.Vertical);
+        }
+    }
+
+    public void FinishedVerticalMatch() {
+        finishedVerticalMatch += 1;
+
+        if (finishedVerticalMatch == gridSize) {
             if (this.matchedCells.Count > 0) {
                 StartCoroutine(DestroyGems());
+            } else {
+                canSwap = true;
             }
         }
     }
@@ -108,7 +122,6 @@ public class Board : MonoBehaviour {
     IEnumerator DestroyGems() {
         List<int> columnsToDrop = new List<int>();
         this.matchedCells.ForEach(cell => {
-            finishedToPlace -= 1;
             cell.Destroy();
             columnsToDrop.Add(cell.columnIndex);
         });
@@ -129,6 +142,7 @@ public class Board : MonoBehaviour {
                 Cell currentCell = boardGrid[columnIndex, i];
 
                 if (currentCell.isCellEmpty) {
+                    finishedToPlace -= 1;
                     emptyCells.Add(currentCell);
                 } else if (emptyCells.Count > 0) {
                     finishedToPlace -= 1;

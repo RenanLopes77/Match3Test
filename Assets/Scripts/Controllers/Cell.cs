@@ -62,11 +62,24 @@ public class Cell : MonoBehaviour {
         board.FinishedToPlace();
     }
 
-    public IEnumerator CheckMatchCoroutine() {
+    public IEnumerator CheckMatchCoroutine(Axis axis) {
 
         while (!board.IsFinishedToPlace())
             yield return new WaitForSeconds(0.1f);
 
+        switch (axis) {
+            case Axis.Hotizontal:
+                CheckHorizontalMatch();
+                break;
+            case Axis.Vertical:
+                CheckVerticalMatch();
+                break;
+        }
+
+        yield return null;
+    }
+
+    void CheckHorizontalMatch() {
         Cell leftCell = IsGemEqual(DirectionEnum.LEFT);
         if (leftCell == null) {
             Cell rightCell = IsGemEqual(DirectionEnum.RIGHT);
@@ -79,9 +92,23 @@ public class Cell : MonoBehaviour {
             }
         }
 
-        board.FinishedToMatch();
+        board.FinishedHorizontalMatch();
+    }
 
-        yield return null;
+    void CheckVerticalMatch() {
+        Cell downCell = IsGemEqual(DirectionEnum.DOWN);
+        if (downCell == null) {
+            Cell upCell = IsGemEqual(DirectionEnum.UP);
+            if (upCell != null) {
+                List<Cell> cells = upCell.GemMatch(new List<Cell>(new Cell[] { this }), DirectionEnum.UP);
+
+                if (cells.Count >= 3) {
+                    board.AddMatches(cells);
+                }
+            }
+        }
+
+        board.FinishedVerticalMatch();
     }
 
     Cell IsGemEqual(DirectionEnum dir) {
