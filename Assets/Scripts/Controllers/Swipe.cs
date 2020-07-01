@@ -20,11 +20,13 @@ public class Swipe : MonoBehaviour {
         graphicRaycaster.Raycast(pointerEventData, results);
 
         RaycastResult result = results.FirstOrDefault(r => CellGem.IsGem(r.gameObject.tag));
-        cell = result.gameObject.transform.parent.gameObject.GetComponent<Cell>();
+        if (result.gameObject != null) {
+            cell = result.gameObject.transform.parent.gameObject.GetComponent<Cell>();
+        }
     }
 
     protected void InterectionEnded(Vector3 position) {
-        if (Vector3.Distance(initialTouchPos, position) > minTouchDistance) {
+        if (cell != null && Vector3.Distance(initialTouchPos, position) > minTouchDistance) {
             cell.Move(Direction.GetDirection(position - initialTouchPos));
             cell = null;
         }
