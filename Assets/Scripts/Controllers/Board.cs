@@ -190,6 +190,8 @@ public class Board : MonoBehaviour {
     }
 
     public void SwapGems(int columnIndex, int cellIndex, DirectionEnum direction) {
+        if (!canSwap) return;
+
         Cell currentCell = boardGrid[columnIndex, cellIndex];
         Cell nextCell = GetCell(columnIndex, cellIndex, direction);
         if (currentCell != null && nextCell != null) {
@@ -198,6 +200,7 @@ public class Board : MonoBehaviour {
             finishedToPlace -= 2;
             currentCell.SetCellGem(nextCellGem, CellGemAnimType.SimpleMove);
             nextCell.SetCellGem(currentCellGem, CellGemAnimType.SimpleMove);
+            canSwap = false;
         }
     }
 }
