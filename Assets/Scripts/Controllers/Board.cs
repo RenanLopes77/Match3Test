@@ -9,22 +9,16 @@ public class Board : MonoBehaviour {
     private Dimensions boardDim;
     private Dimensions cellDim;
     private RectTransform rectTransform;
-    public GameObject columnPrefab;
     public Cell[, ] boardGrid;
+    public GameObject columnPrefab;
+    public List<Cell> matchedCells = new List<Cell>();
     public List<Gem> gems;
     public Vector2 padding;
     public int cells;
     public int columns;
-
-    public int gridSize;
-
-    // *************************************
-
-    public List<Cell> matchedCells = new List<Cell>();
-    public int finishedToPlace = 0;
     public int finishedToMatch = 0;
-
-    // *************************************
+    public int finishedToPlace = 0;
+    public int gridSize;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -65,7 +59,6 @@ public class Board : MonoBehaviour {
 
     public Gem GetGem() {
         int index = UnityEngine.Random.Range(0, gems.Count);
-        // int index = UnityEngine.Random.Range(0, 2);
         return gems[index];
     }
 
@@ -77,85 +70,20 @@ public class Board : MonoBehaviour {
         return null;
     }
 
-    public void AddMatches(List<Cell> matches, int amount) {
-        this.matchedCells = this.matchedCells.Concat(matches).ToList();
-
-        finishedToMatch += amount;
-
-        if (finishedToMatch == gridSize) {
-            Debug.Log($"22 FinishedToCheckMatches");
-            if (this.matchedCells.Count > 0) {
-                finishedToMatch = 0;
-                StartCoroutine(DestroyGems());
-            }
-        }
-    }
-
-    IEnumerator DestroyGems() {
-
-        Debug.Log($"333 ToDestroy");
-
-        List<int> toDrop = new List<int>();
-        this.matchedCells.ForEach(cell => {
-            finishedToPlace -= 1;
-            cell.Destroy();
-            toDrop.Add(cell.columnIndex);
-        });
-        this.matchedCells.Clear();
-
-        Debug.Log($"333 FinishedToDestroy");
-
-        yield return new WaitForSeconds(0.8f);
-
-        Debug.Log($"4444 ToDrop");
-
-        toDrop = toDrop.Distinct().ToList();
-        toDrop.ForEach(td => {
-            DropGems(td);
-        });
-
-        Debug.Log($"4444 FinishedToDrop");
-    }
-
-    public void DropGems(int columnIndex) {
-        List<Cell> emptyCells = new List<Cell>();
-
-        for (int i = 0; i < cells; i++) {
-
-            Cell currentCell = boardGrid[columnIndex, i];
-
-            if (currentCell.isCellEmpty) {
-                emptyCells.Add(currentCell);
-            } else if (emptyCells.Count > 0) {
-                emptyCells[0].SetCellGem(currentCell.cellGem, CellGemMovementType.SimpleMove);
-                emptyCells.RemoveAt(0);
-                currentCell.isCellEmpty = true;
-                emptyCells.Add(currentCell);
-            }
-
-        }
-
-        if (emptyCells.Count > 0) {
-            emptyCells.ForEach(emptyCell => {
-                emptyCell.AddCellGem();
-            });
-            emptyCells.Clear();
-        }
-    }
-
     public void FinishedToPlace() {
         finishedToPlace += 1;
 
-        if (finishedToPlace == gridSize) {
-            Debug.Log($"1 FinishedToPlace");
+        if (IsFinishedToPlace()) {
             CheckAllAgain();
         }
     }
 
-    public void CheckAllAgain() {
-        Debug.Log($"22 CheckMatches");
-        finishedToMatch = 0;
+    public bool IsFinishedToPlace() {
+        return finishedToPlace == gridSize;
+    }
 
+    public void CheckAllAgain() {
+        finishedToMatch = 0;
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < cells; j++) {
                 StartCoroutine(boardGrid[i, j].CheckMatchCoroutine());
@@ -163,11 +91,62 @@ public class Board : MonoBehaviour {
         }
     }
 
-    public bool IsLastColumnCell(int cellIndex) {
-        if (cellIndex < cells - 1) {
-            return false;
+    public void AddMatches(List<Cell> matches) {
+        this.matchedCells = this.matchedCells.Concat(matches).ToList();
+    }
+
+    public void FinishedToMatch() {
+        finishedToMatch += 1;
+
+        if (finishedToMatch == gridSize) {
+            if (this.matchedCells.Count > 0) {
+                StartCoroutine(DestroyGems());
+            }
         }
-        return true;
+    }
+
+    IEnumerator DestroyGems() {
+        List<int> columnsToDrop = new List<int>();
+        this.matchedCells.ForEach(cell => {
+            finishedToPlace -= 1;
+            cell.Destroy();
+            columnsToDrop.Add(cell.columnIndex);
+        });
+        this.matchedCells.Clear();
+
+        yield return new WaitForSeconds(0.8f);
+
+        StartCoroutine(DropGems(columnsToDrop.Distinct().ToList()));
+    }
+
+    IEnumerator DropGems(List<int> columnsToDrop) {
+        columnsToDrop.ForEach(columnIndex => {
+
+            List<Cell> emptyCells = new List<Cell>();
+
+            for (int i = 0; i < cells; i++) {
+
+                Cell currentCell = boardGrid[columnIndex, i];
+
+                if (currentCell.isCellEmpty) {
+                    emptyCells.Add(currentCell);
+                } else if (emptyCells.Count > 0) {
+                    finishedToPlace -= 1;
+                    emptyCells[0].SetCellGem(currentCell.cellGem, CellGemAnimType.SimpleMove);
+                    emptyCells.RemoveAt(0);
+                    currentCell.isCellEmpty = true;
+                    emptyCells.Add(currentCell);
+                }
+
+            }
+
+            if (emptyCells.Count > 0) {
+                emptyCells.ForEach(emptyCell => emptyCell.AddCellGem());
+                emptyCells.Clear();
+            }
+        });
+
+        yield return null;
     }
 
     public Cell GetCell(int columnIndex, int cellIndex, DirectionEnum direction) {
@@ -188,7 +167,7 @@ public class Board : MonoBehaviour {
                 }
                 break;
             case DirectionEnum.UP:
-                if (!IsLastColumnCell(cellIndex)) {
+                if (cellIndex < cells - 1) {
                     return boardGrid[columnIndex, cellIndex + 1];
                 }
                 break;
@@ -202,10 +181,9 @@ public class Board : MonoBehaviour {
         if (currentCell != null && nextCell != null) {
             GameObject currentCellGem = currentCell.cellGem;
             GameObject nextCellGem = nextCell.cellGem;
-            currentCell.SetCellGem(nextCellGem, CellGemMovementType.SimpleMove);
-            nextCell.SetCellGem(currentCellGem, CellGemMovementType.SimpleMove);
+            finishedToPlace -= 2;
+            currentCell.SetCellGem(nextCellGem, CellGemAnimType.SimpleMove);
+            nextCell.SetCellGem(currentCellGem, CellGemAnimType.SimpleMove);
         }
-
-        CheckAllAgain();
     }
 }

@@ -3,7 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum CellGemMovementType {
+public enum CellGemAnimType {
     Destroy,
     Drop,
     SimpleMove,
@@ -15,44 +15,40 @@ public class CellGem : MonoBehaviour {
     private float animDuration = 0.8f;
     private Cell cell;
 
-    public void Init(Cell cell, Dimensions boardDim, CellGemMovementType movementType) {
+    public void Init(Cell cell, Dimensions boardDim, CellGemAnimType movementType) {
         this.cell = cell;
         transform.localPosition = new Vector3(0, boardDim.height, 0);
-        Move(movementType);
+        Animate(movementType);
     }
 
-    public void SetParent(Transform parent, CellGemMovementType movementType) {
+    public void SetParent(Transform parent, CellGemAnimType movementType) {
         transform.SetParent(parent);
-        Move(movementType);
+        Animate(movementType);
     }
 
-    public void Move(CellGemMovementType movementType) {
-        cell.SetMoving(true);
+    public void Animate(CellGemAnimType movementType) {
         switch (movementType) {
-            case CellGemMovementType.Destroy:
+            case CellGemAnimType.Destroy:
                 Destroy();
                 break;
-            case CellGemMovementType.Drop:
+            case CellGemAnimType.Drop:
                 Drop();
                 break;
-            case CellGemMovementType.SimpleMove:
+            case CellGemAnimType.SimpleMove:
                 SimpleMove();
                 break;
         }
     }
 
     private void Destroy() {
-        // GetComponent<Image>().color = new Color(0, 0, 0, 0);
         transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), animDuration).SetAutoKill().OnComplete(() => {
-            // cell.CellGemDestroyed();
-            cell.SetMoving(false);
             Destroy(gameObject);
         });
     }
 
     private void SimpleMove() {
         transform.DOMove(transform.parent.position, animDuration).SetEase(Ease.OutQuint).OnComplete(() => {
-            cell.SetMoving(false);
+            cell.FinishedToPlace();
         });;
     }
 
@@ -69,12 +65,6 @@ public class CellGem : MonoBehaviour {
                     });
             });
     }
-
-    /* REMOVER REMOVER REMOVER REMOVER REMOVER REMOVER REMOVER  */
-    public void SetColor(Color color) {
-        GetComponent<Image>().color = color;
-    }
-    /* REMOVER REMOVER REMOVER REMOVER REMOVER REMOVER REMOVER  */
 
     public static bool IsGem(string tag) {
         return Enum.IsDefined(typeof(GemEnum), tag);
