@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using EasyButtons;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,22 +67,22 @@ public class Cell : MonoBehaviour {
 
         switch (axis) {
             case Axis.Hotizontal:
-                CheckHorizontalMatch();
+                ChecMatch(DirectionEnum.LEFT, DirectionEnum.RIGHT, board.FinishedHorizontalMatch);
                 break;
             case Axis.Vertical:
-                CheckVerticalMatch();
+                ChecMatch(DirectionEnum.DOWN, DirectionEnum.UP, board.FinishedVerticalMatch);
                 break;
         }
 
         yield return null;
     }
 
-    void CheckHorizontalMatch() {
-        Cell leftCell = IsGemEqual(DirectionEnum.LEFT);
-        if (leftCell == null) {
-            Cell rightCell = IsGemEqual(DirectionEnum.RIGHT);
-            if (rightCell != null) {
-                List<Cell> cells = rightCell.GemMatch(new List<Cell>(new Cell[] { this }), DirectionEnum.RIGHT);
+    void ChecMatch(DirectionEnum firstDir, DirectionEnum secondDir, Action FinishedMatch) {
+        Cell firstCell = IsGemEqual(firstDir);
+        if (firstCell == null) {
+            Cell secondCell = IsGemEqual(secondDir);
+            if (secondCell != null) {
+                List<Cell> cells = secondCell.GemMatch(new List<Cell>(new Cell[] { this }), secondDir);
 
                 if (cells.Count >= 3) {
                     board.AddMatches(cells);
@@ -92,23 +90,7 @@ public class Cell : MonoBehaviour {
             }
         }
 
-        board.FinishedHorizontalMatch();
-    }
-
-    void CheckVerticalMatch() {
-        Cell downCell = IsGemEqual(DirectionEnum.DOWN);
-        if (downCell == null) {
-            Cell upCell = IsGemEqual(DirectionEnum.UP);
-            if (upCell != null) {
-                List<Cell> cells = upCell.GemMatch(new List<Cell>(new Cell[] { this }), DirectionEnum.UP);
-
-                if (cells.Count >= 3) {
-                    board.AddMatches(cells);
-                }
-            }
-        }
-
-        board.FinishedVerticalMatch();
+        FinishedMatch();
     }
 
     Cell IsGemEqual(DirectionEnum dir) {

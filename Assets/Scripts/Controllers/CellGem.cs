@@ -1,7 +1,6 @@
 ﻿using System;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum CellGemAnimType {
     Destroy,
@@ -10,10 +9,10 @@ public enum CellGemAnimType {
 }
 
 public class CellGem : MonoBehaviour {
-
-    // public float animDuration = 0.5f;
-    private float animDuration = 0.8f;
     private Cell cell;
+    private float destroyAnimDuration = 0.4f;
+    private float dropAnimDuration = 0.5f;
+    private float simpleMoveAnimDuration = 0.3f;
 
     public void Init(Cell cell, Dimensions boardDim, CellGemAnimType movementType) {
         this.cell = cell;
@@ -41,13 +40,13 @@ public class CellGem : MonoBehaviour {
     }
 
     private void Destroy() {
-        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), animDuration).SetAutoKill().OnComplete(() => {
+        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), destroyAnimDuration).SetAutoKill().OnComplete(() => {
             Destroy(gameObject);
         });
     }
 
     private void SimpleMove() {
-        transform.DOMove(transform.parent.position, animDuration).SetEase(Ease.OutQuint).OnComplete(() => {
+        transform.DOMove(transform.parent.position, simpleMoveAnimDuration).SetEase(Ease.OutQuint).OnComplete(() => {
             cell.FinishedToPlace();
         });;
     }
@@ -55,10 +54,10 @@ public class CellGem : MonoBehaviour {
     private void Drop() {
         float distance = Vector3.Distance(transform.parent.position, transform.position);
         Vector3 endValue = transform.parent.position - new Vector3(0, distance * 0.05f, 0);
-        transform.DOMove(endValue, animDuration)
+        transform.DOMove(endValue, dropAnimDuration)
             .SetEase(Ease.OutQuint)
             .OnComplete(() => {
-                transform.DOMove(transform.parent.position, animDuration)
+                transform.DOMove(transform.parent.position, dropAnimDuration)
                     .SetEase(Ease.OutBounce)
                     .OnComplete(() => {
                         cell.FinishedToPlace();
