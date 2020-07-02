@@ -4,21 +4,23 @@ using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
+
     private Dimensions boardDim;
     private Dimensions cellDim;
+    private LastSwap lastSwap = null;
     private RectTransform rectTransform;
     public Cell[, ] boardGrid;
     public GameObject columnPrefab;
     public List<Cell> matchedCells = new List<Cell>();
     public List<Gem> gems;
     public Vector2 padding;
+    public bool canSwap = false;
     public int cells;
     public int columns;
     public int finishedHorizontalMatch = 0;
-    public int finishedVerticalMatch = 0;
     public int finishedToPlace = 0;
+    public int finishedVerticalMatch = 0;
     public int gridSize;
-    public bool canSwap = false;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -110,7 +112,10 @@ public class Board : MonoBehaviour {
 
         if (finishedVerticalMatch == gridSize) {
             if (this.matchedCells.Count > 0) {
+                lastSwap = null;
                 StartCoroutine(DestroyGems());
+            } else if (lastSwap != null) {
+                UndoSwap();
             } else {
                 canSwap = true;
             }
@@ -187,18 +192,28 @@ public class Board : MonoBehaviour {
         return null;
     }
 
-    public void SwapGems(int columnIndex, int cellIndex, DirectionEnum direction) {
+    void UndoSwap() {
+        SwapGems(lastSwap.cellOne, lastSwap.cellTwo);
+        lastSwap = null;
+    }
+
+    public void GetGemsToSwap(int columnIndex, int cellIndex, DirectionEnum direction) {
         if (!canSwap) return;
 
         Cell currentCell = boardGrid[columnIndex, cellIndex];
         Cell nextCell = GetCell(columnIndex, cellIndex, direction);
         if (currentCell != null && nextCell != null) {
-            GameObject currentCellGem = currentCell.cellGem;
-            GameObject nextCellGem = nextCell.cellGem;
-            finishedToPlace -= 2;
-            currentCell.SetCellGem(nextCellGem, CellGemAnimType.SimpleMove);
-            nextCell.SetCellGem(currentCellGem, CellGemAnimType.SimpleMove);
-            canSwap = false;
+            SwapGems(currentCell, nextCell);
+            lastSwap = new LastSwap(direction, currentCell, nextCell);
         }
+    }
+
+    void SwapGems(Cell cellOne, Cell cellTwo) {
+        GameObject CellOneGem = cellOne.cellGem;
+        GameObject CellTwoGem = cellTwo.cellGem;
+        finishedToPlace -= 2;
+        cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
+        cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);
+        canSwap = false;
     }
 }

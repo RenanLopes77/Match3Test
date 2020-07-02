@@ -118,6 +118,6 @@ public class Cell : MonoBehaviour {
     }
 
     public void Move(DirectionEnum direction) {
-        board.SwapGems(columnIndex, cellIndex, direction);
+        board.GetGemsToSwap(columnIndex, cellIndex, direction);
     }
 }
