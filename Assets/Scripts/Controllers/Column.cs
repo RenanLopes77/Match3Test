@@ -45,6 +45,6 @@ public class Column : MonoBehaviour {
             transform
         ).GetComponent<Cell>();
         cell.Init(board, columnIndex, cellIndex);
-        board.AddCellToBoard(cell.gameObject, columnIndex, cellIndex);
+        board.AddCellToBoard(cell, columnIndex, cellIndex);
     }
 }

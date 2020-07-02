@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using EasyButtons;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +10,7 @@ public class Cell : MonoBehaviour {
     private Dimensions cellDim;
     public GameObject cellGem;
     public GameObject cellGemPrefab;
+    public bool isCellEmpty = false;
     public int cellIndex;
     public int columnIndex;
 
@@ -32,18 +33,20 @@ public class Cell : MonoBehaviour {
             0
         );
     }
+
     void SetName() {
         gameObject.name = $"Cell: {cellIndex}";
     }
+
     void SetSizeDelta() {
         RectTransform rectTransform = GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(cellDim.width, cellDim.height);
     }
 
-    void AddCellGem() {
-        cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
-        cellGem.transform.localPosition = new Vector3(0, boardDim.height, 0);
-        cellGem.GetComponent<CellGem>().Move(CellGemMovementType.Drop);
+    public void AddCellGem() {
+        isCellEmpty = false;
+        this.cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
+        this.cellGem.GetComponent<CellGem>().Init(this, boardDim, CellGemAnimType.Drop);
         SetGem(cellGem);
     }
 
@@ -53,7 +56,63 @@ public class Cell : MonoBehaviour {
         cellGem.tag = gem.gemType.ToString();
     }
 
-    public void SetCellGem(GameObject cellGem, CellGemMovementType movementType) {
+    public void FinishedToPlace() {
+        board.FinishedToPlace();
+    }
+
+    public IEnumerator CheckMatchCoroutine(Axis axis) {
+
+        while (!board.IsFinishedToPlace())
+            yield return new WaitForSeconds(0.1f);
+
+        switch (axis) {
+            case Axis.Hotizontal:
+                ChecMatch(DirectionEnum.LEFT, DirectionEnum.RIGHT, board.FinishedHorizontalMatch);
+                break;
+            case Axis.Vertical:
+                ChecMatch(DirectionEnum.DOWN, DirectionEnum.UP, board.FinishedVerticalMatch);
+                break;
+        }
+
+        yield return null;
+    }
+
+    void ChecMatch(DirectionEnum firstDir, DirectionEnum secondDir, Action FinishedMatch) {
+        Cell firstCell = IsGemEqual(firstDir);
+        if (firstCell == null) {
+            Cell secondCell = IsGemEqual(secondDir);
+            if (secondCell != null) {
+                List<Cell> cells = secondCell.GemMatch(new List<Cell>(new Cell[] { this }), secondDir);
+
+                if (cells.Count >= 3) {
+                    board.AddMatches(cells);
+                }
+            }
+        }
+
+        FinishedMatch();
+    }
+
+    Cell IsGemEqual(DirectionEnum dir) {
+        return board.IsGemEqual(columnIndex, cellIndex, dir, CellGem.GetGemEnum(cellGem.tag));
+    }
+
+    public List<Cell> GemMatch(List<Cell> cells, DirectionEnum direction) {
+        cells.Add(this);
+        Cell cell = IsGemEqual(direction);
+        if (cell != null) {
+            return cell.GemMatch(cells, direction);
+        }
+        return cells;
+    }
+
+    public void Destroy() {
+        cellGem.GetComponent<CellGem>().Animate(CellGemAnimType.Destroy);
+        isCellEmpty = true;
+    }
+
+    public void SetCellGem(GameObject cellGem, CellGemAnimType movementType) {
+        isCellEmpty = false;
         this.cellGem = cellGem;
         this.cellGem.GetComponent<CellGem>().SetParent(transform, movementType);
     }

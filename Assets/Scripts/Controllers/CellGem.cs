@@ -2,47 +2,74 @@
 using DG.Tweening;
 using UnityEngine;
 
-public enum CellGemMovementType {
+public enum CellGemAnimType {
+    Destroy,
     Drop,
     SimpleMove,
 }
 
 public class CellGem : MonoBehaviour {
+    private Cell cell;
+    private float destroyAnimDuration = 0.4f;
+    private float dropAnimDuration = 0.5f;
+    private float simpleMoveAnimDuration = 0.3f;
 
-    public float animDuration = 0.5f;
-
-    public void SetParent(Transform parent, CellGemMovementType movementType) {
-        transform.SetParent(parent);
-        Move(movementType);
+    public void Init(Cell cell, Dimensions boardDim, CellGemAnimType movementType) {
+        this.cell = cell;
+        transform.localPosition = new Vector3(0, boardDim.height, 0);
+        Animate(movementType);
     }
 
-    public void Move(CellGemMovementType movementType) {
+    public void SetParent(Transform parent, CellGemAnimType movementType) {
+        transform.SetParent(parent);
+        Animate(movementType);
+    }
+
+    public void Animate(CellGemAnimType movementType) {
         switch (movementType) {
-            case CellGemMovementType.Drop:
+            case CellGemAnimType.Destroy:
+                Destroy();
+                break;
+            case CellGemAnimType.Drop:
                 Drop();
                 break;
-            case CellGemMovementType.SimpleMove:
+            case CellGemAnimType.SimpleMove:
                 SimpleMove();
                 break;
         }
     }
 
+    private void Destroy() {
+        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), destroyAnimDuration).SetAutoKill().OnComplete(() => {
+            Destroy(gameObject);
+        });
+    }
+
     private void SimpleMove() {
-        transform.DOMove(transform.parent.position, animDuration).SetEase(Ease.OutQuint);
+        transform.DOMove(transform.parent.position, simpleMoveAnimDuration).SetEase(Ease.OutQuint).OnComplete(() => {
+            cell.FinishedToPlace();
+        });;
     }
 
     private void Drop() {
         float distance = Vector3.Distance(transform.parent.position, transform.position);
-        Vector3 endValue = transform.parent.position - new Vector3(0, distance * 0.1f, 0);
-        transform.DOMove(endValue, animDuration)
+        Vector3 endValue = transform.parent.position - new Vector3(0, distance * 0.05f, 0);
+        transform.DOMove(endValue, dropAnimDuration)
             .SetEase(Ease.OutQuint)
             .OnComplete(() => {
-                transform.DOMove(transform.parent.position, animDuration)
-                    .SetEase(Ease.OutBounce);
+                transform.DOMove(transform.parent.position, dropAnimDuration)
+                    .SetEase(Ease.OutBounce)
+                    .OnComplete(() => {
+                        cell.FinishedToPlace();
+                    });
             });
     }
 
     public static bool IsGem(string tag) {
         return Enum.IsDefined(typeof(GemEnum), tag);
+    }
+
+    public static GemEnum GetGemEnum(string tag) {
+        return (GemEnum) Enum.Parse(typeof(GemEnum), tag);
     }
 }

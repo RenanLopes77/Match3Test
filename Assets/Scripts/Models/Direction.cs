@@ -7,6 +7,11 @@ public enum DirectionEnum {
     UP,
 }
 
+public enum Axis {
+    Hotizontal,
+    Vertical
+}
+
 public class Direction {
     public static DirectionEnum GetDirection(Vector3 direction) {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) {
