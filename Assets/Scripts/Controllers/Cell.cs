@@ -67,17 +67,18 @@ public class Cell : MonoBehaviour {
 
         switch (axis) {
             case Axis.Hotizontal:
-                ChecMatch(DirectionEnum.LEFT, DirectionEnum.RIGHT, board.FinishedHorizontalMatch);
+                CheckMatch(axis, DirectionEnum.LEFT, DirectionEnum.RIGHT, board.FinishedHorizontalMatch);
                 break;
             case Axis.Vertical:
-                ChecMatch(DirectionEnum.DOWN, DirectionEnum.UP, board.FinishedVerticalMatch);
+                CheckMatch(axis, DirectionEnum.DOWN, DirectionEnum.UP, board.FinishedVerticalMatch);
                 break;
         }
 
         yield return null;
     }
 
-    void ChecMatch(DirectionEnum firstDir, DirectionEnum secondDir, Action FinishedMatch) {
+    void CheckMatch(Axis axis, DirectionEnum firstDir, DirectionEnum secondDir, Action FinishedMatch) {
+
         Cell firstCell = IsGemEqual(firstDir);
         if (firstCell == null) {
             Cell secondCell = IsGemEqual(secondDir);
@@ -86,11 +87,55 @@ public class Cell : MonoBehaviour {
 
                 if (cells.Count >= 3) {
                     board.AddMatches(cells);
+                } else {
+                    CheckPossibleMovesTwinCells(axis, cells);
                 }
+            } else {
+                CheckPossibleMovesSingleCell(axis);
             }
         }
 
         FinishedMatch();
+    }
+
+    void CheckPossibleMovesSingleCell(Axis axis) {
+        switch (axis) {
+            case Axis.Hotizontal:
+                FindPossibleMovesSingleCell(DirectionEnum.DOUBLE_LEFT, DirectionEnum.DOUBLE_RIGHT, DirectionEnum.UPPER_RIGHT, DirectionEnum.LOWER_RIGHT);
+                break;
+            case Axis.Vertical:
+                FindPossibleMovesSingleCell(DirectionEnum.DOUBLE_DOWN, DirectionEnum.DOUBLE_UP, DirectionEnum.UPPER_RIGHT, DirectionEnum.UPPER_LEFT);
+                break;
+        }
+    }
+
+    void FindPossibleMovesSingleCell(DirectionEnum firstDir, DirectionEnum secondDir, DirectionEnum thirdDir, DirectionEnum fourthDir) {
+        if (board.HasPossibleMovement() || board.HasMatches()) return;
+        if (IsGemEqual(firstDir) == null && IsGemEqual(secondDir) != null) {
+            if (IsGemEqual(thirdDir) != null || IsGemEqual(fourthDir) != null) {
+                board.AddPossibleMovement();
+            }
+        }
+    }
+
+    void CheckPossibleMovesTwinCells(Axis axis, List<Cell> cells) {
+        switch (axis) {
+            case Axis.Hotizontal:
+                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_LEFT, DirectionEnum.UPPER_LEFT, DirectionEnum.LOWER_LEFT);
+                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_RIGHT, DirectionEnum.UPPER_RIGHT, DirectionEnum.LOWER_RIGHT);
+                break;
+            case Axis.Vertical:
+                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_DOWN, DirectionEnum.LOWER_LEFT, DirectionEnum.LOWER_RIGHT);
+                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_UP, DirectionEnum.UPPER_RIGHT, DirectionEnum.UPPER_LEFT);
+                break;
+        }
+    }
+
+    void FindPossibleMovesTwinCells(DirectionEnum firstDir, DirectionEnum secondDir, DirectionEnum thirdDir) {
+        if (board.HasPossibleMovement() || board.HasMatches()) return;
+        if (IsGemEqual(firstDir) != null || IsGemEqual(secondDir) != null || IsGemEqual(thirdDir) != null) {
+            board.AddPossibleMovement();
+        }
     }
 
     Cell IsGemEqual(DirectionEnum dir) {

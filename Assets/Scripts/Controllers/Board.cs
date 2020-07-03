@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
-
     private Dimensions boardDim;
     private Dimensions cellDim;
     private LastSwap lastSwap = null;
@@ -21,6 +20,7 @@ public class Board : MonoBehaviour {
     public int finishedToPlace = 0;
     public int finishedVerticalMatch = 0;
     public int gridSize;
+    public int possibleMovements = 0;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -64,6 +64,10 @@ public class Board : MonoBehaviour {
         return gems[index];
     }
 
+    public Gem GetGemByIndex(int index) {
+        return gems[index];
+    }
+
     public Cell IsGemEqual(int columnIndex, int cellIndex, DirectionEnum direction, GemEnum gem) {
         Cell cell = GetCell(columnIndex, cellIndex, direction);
         if (cell != null && gem.ToString() == cell.cellGem.tag) {
@@ -72,11 +76,24 @@ public class Board : MonoBehaviour {
         return null;
     }
 
+    public void AddPossibleMovement() {
+        this.possibleMovements += 1;
+    }
+
+    public bool HasPossibleMovement() {
+        return possibleMovements > 0;
+    }
+
+    public bool HasMatches() {
+        return this.matchedCells.Count > 0;
+    }
+
     public void FinishedToPlace() {
         finishedToPlace += 1;
 
         if (IsFinishedToPlace()) {
             finishedHorizontalMatch = 0;
+            possibleMovements = 0;
             CheckMatch(Axis.Hotizontal);
         }
     }
@@ -169,27 +186,41 @@ public class Board : MonoBehaviour {
     public Cell GetCell(int columnIndex, int cellIndex, DirectionEnum direction) {
         switch (direction) {
             case DirectionEnum.DOWN:
-                if (cellIndex > 0) {
-                    return boardGrid[columnIndex, cellIndex - 1];
-                }
-                break;
+                return GetCellFromGrid(columnIndex, cellIndex - 1);
             case DirectionEnum.LEFT:
-                if (columnIndex > 0) {
-                    return boardGrid[columnIndex - 1, cellIndex];
-                }
-                break;
+                return GetCellFromGrid(columnIndex - 1, cellIndex);
             case DirectionEnum.RIGHT:
-                if (columnIndex < columns - 1) {
-                    return boardGrid[columnIndex + 1, cellIndex];
-                }
-                break;
+                return GetCellFromGrid(columnIndex + 1, cellIndex);
             case DirectionEnum.UP:
-                if (cellIndex < cells - 1) {
-                    return boardGrid[columnIndex, cellIndex + 1];
-                }
-                break;
+                return GetCellFromGrid(columnIndex, cellIndex + 1);
+            case DirectionEnum.DOUBLE_DOWN:
+                return GetCellFromGrid(columnIndex, cellIndex - 2);
+            case DirectionEnum.DOUBLE_LEFT:
+                return GetCellFromGrid(columnIndex - 2, cellIndex);
+            case DirectionEnum.DOUBLE_RIGHT:
+                return GetCellFromGrid(columnIndex + 2, cellIndex);
+            case DirectionEnum.DOUBLE_UP:
+                return GetCellFromGrid(columnIndex, cellIndex + 2);
+            case DirectionEnum.UPPER_LEFT:
+                return GetCellFromGrid(columnIndex - 1, cellIndex + 1);
+            case DirectionEnum.UPPER_RIGHT:
+                return GetCellFromGrid(columnIndex + 1, cellIndex + 1);
+            case DirectionEnum.LOWER_LEFT:
+                return GetCellFromGrid(columnIndex - 1, cellIndex - 1);
+            case DirectionEnum.LOWER_RIGHT:
+                return GetCellFromGrid(columnIndex + 1, cellIndex - 1);
         }
+
         return null;
+    }
+
+    Cell GetCellFromGrid(int columnIndex, int cellIndex) {
+        if (columnIndex < 0 ||
+            columnIndex >= columns ||
+            cellIndex < 0 ||
+            cellIndex >= cells) return null;
+
+        return boardGrid[columnIndex, cellIndex];
     }
 
     void UndoSwap() {

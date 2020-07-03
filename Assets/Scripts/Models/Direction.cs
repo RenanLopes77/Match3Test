@@ -5,6 +5,14 @@ public enum DirectionEnum {
     LEFT,
     RIGHT,
     UP,
+    DOUBLE_DOWN,
+    DOUBLE_LEFT,
+    DOUBLE_RIGHT,
+    DOUBLE_UP,
+    UPPER_LEFT,
+    UPPER_RIGHT,
+    LOWER_LEFT,
+    LOWER_RIGHT,
 }
 
 public enum Axis {
