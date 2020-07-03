@@ -4,23 +4,24 @@ using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
+    [SerializeField] private GameObject columnPrefab = null;
+    [SerializeField] private List<Gem> gems = new List<Gem>();
+    [SerializeField] private Vector2 padding = Vector2.zero;
+    [SerializeField] private bool canSwap = false;
+    [SerializeField] private int cells = 0;
+    [SerializeField] private int columns = 0;
+    [SerializeField] private int finishedHorizontalMatch = 0;
+    [SerializeField] private int finishedToPlace = 0;
+    [SerializeField] private int finishedVerticalMatch = 0;
+    [SerializeField] private int gridSize = 0;
+    [SerializeField] private int possibleMovements = 0;
+    [SerializeField] private int timesShuffled = 0;
+    private Cell[, ] boardGrid;
     private Dimensions boardDim;
     private Dimensions cellDim;
     private LastSwap lastSwap = null;
+    private List<Cell> matchedCells = new List<Cell>();
     private RectTransform rectTransform;
-    public Cell[, ] boardGrid;
-    public GameObject columnPrefab;
-    public List<Cell> matchedCells = new List<Cell>();
-    public List<Gem> gems;
-    public Vector2 padding;
-    public bool canSwap = false;
-    public int cells;
-    public int columns;
-    public int finishedHorizontalMatch = 0;
-    public int finishedToPlace = 0;
-    public int finishedVerticalMatch = 0;
-    public int gridSize;
-    public int possibleMovements = 0;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -78,6 +79,7 @@ public class Board : MonoBehaviour {
 
     public void AddPossibleMovement() {
         this.possibleMovements += 1;
+        this.timesShuffled = 0;
     }
 
     public bool HasPossibleMovement() {
@@ -129,10 +131,13 @@ public class Board : MonoBehaviour {
 
         if (finishedVerticalMatch == gridSize) {
             if (this.matchedCells.Count > 0) {
+                this.timesShuffled = 0;
                 lastSwap = null;
                 StartCoroutine(DestroyGems());
             } else if (lastSwap != null) {
                 UndoSwap();
+            } else if (!HasPossibleMovement()) {
+                ShuffleGems();
             } else {
                 canSwap = true;
             }
@@ -246,5 +251,30 @@ public class Board : MonoBehaviour {
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);
         canSwap = false;
+    }
+
+    void ShuffleGems() {
+        timesShuffled += 1;
+
+        if (timesShuffled < 10) {
+            for (int i = 0; i < gridSize / 2; i++) {
+                SwapGems(
+                    boardGrid[Random.Range(0, columns), Random.Range(0, cells)],
+                    boardGrid[Random.Range(0, columns), Random.Range(0, cells)]
+                );
+            }
+        } else {
+            timesShuffled = 0;
+            DestroyAllGems();
+        }
+    }
+
+    void DestroyAllGems() {
+        for (int i = 0; i < columns; i++) {
+            for (int j = 0; j < cells; j++) {
+                this.matchedCells.Add(boardGrid[i, j]);
+            }
+        }
+        StartCoroutine(DestroyGems());
     }
 }

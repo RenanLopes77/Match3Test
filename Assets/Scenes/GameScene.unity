@@ -302,6 +302,7 @@ MonoBehaviour:
   finishedVerticalMatch: 0
   gridSize: 0
   possibleMovements: 0
+  timesShuffled: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

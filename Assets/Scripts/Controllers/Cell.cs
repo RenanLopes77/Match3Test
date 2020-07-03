@@ -8,11 +8,11 @@ public class Cell : MonoBehaviour {
     private Board board;
     private Dimensions boardDim;
     private Dimensions cellDim;
+    private GameObject cellGemPrefab;
     public GameObject cellGem;
-    public GameObject cellGemPrefab;
-    public bool isCellEmpty = false;
-    public int cellIndex;
+    [SerializeField] private int cellIndex;
     public int columnIndex;
+    public bool isCellEmpty = false;
 
     public void Init(Board board, int columnIndex, int cellIndex) {
         this.board = board;
