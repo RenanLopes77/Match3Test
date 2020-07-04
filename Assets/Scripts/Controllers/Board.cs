@@ -6,6 +6,7 @@ using UnityEngine;
 public class Board : MonoBehaviour {
     [SerializeField] private GameObject columnPrefab = null;
     [SerializeField] private List<Gem> gems = new List<Gem>();
+    [SerializeField] private Points points = null;
     [SerializeField] private Vector2 padding = Vector2.zero;
     [SerializeField] private bool canSwap = false;
     [SerializeField] private int cells = 0;
@@ -126,6 +127,7 @@ public class Board : MonoBehaviour {
 
     public void AddMatches(List<Cell> matches) {
         this.matchedCells = this.matchedCells.Concat(matches).ToList();
+        this.points.AddPoints(matches.Count);
     }
 
     public void FinishedHorizontalMatch() {
