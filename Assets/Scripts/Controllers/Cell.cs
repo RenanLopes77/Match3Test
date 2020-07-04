@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Cell : MonoBehaviour {
+    [SerializeField] private GameObject cellGemPrefab = null;
     private Board board;
     private Dimensions boardDim;
     private Dimensions cellDim;
-    private GameObject cellGemPrefab;
     public GameObject cellGem;
-    [SerializeField] private int cellIndex;
-    public int columnIndex;
     public bool isCellEmpty = false;
+    public int cellIndex;
+    public int columnIndex;
 
     public void Init(Board board, int columnIndex, int cellIndex) {
         this.board = board;
@@ -111,9 +111,12 @@ public class Cell : MonoBehaviour {
 
     void FindPossibleMovesSingleCell(DirectionEnum firstDir, DirectionEnum secondDir, DirectionEnum thirdDir, DirectionEnum fourthDir) {
         if (board.HasPossibleMovement() || board.HasMatches()) return;
-        if (IsGemEqual(firstDir) == null && IsGemEqual(secondDir) != null) {
-            if (IsGemEqual(thirdDir) != null || IsGemEqual(fourthDir) != null) {
-                board.AddPossibleMovement();
+
+        if (IsGemEqual(firstDir) == null && IsGemEqual(secondDir) is Cell secondCell && secondCell != null) {
+            if (IsGemEqual(thirdDir) is Cell thirdCell && thirdCell != null) {
+                board.AddPossibleMovement(new List<Cell> { this, secondCell, thirdCell });
+            } else if (IsGemEqual(fourthDir) is Cell fourthCell && fourthCell != null) {
+                board.AddPossibleMovement(new List<Cell> { this, secondCell, fourthCell });
             }
         }
     }
@@ -121,20 +124,28 @@ public class Cell : MonoBehaviour {
     void CheckPossibleMovesTwinCells(Axis axis, List<Cell> cells) {
         switch (axis) {
             case Axis.Hotizontal:
-                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_LEFT, DirectionEnum.UPPER_LEFT, DirectionEnum.LOWER_LEFT);
-                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_RIGHT, DirectionEnum.UPPER_RIGHT, DirectionEnum.LOWER_RIGHT);
+                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_LEFT, DirectionEnum.UPPER_LEFT, DirectionEnum.LOWER_LEFT, cells);
+                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_RIGHT, DirectionEnum.UPPER_RIGHT, DirectionEnum.LOWER_RIGHT, cells);
                 break;
             case Axis.Vertical:
-                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_DOWN, DirectionEnum.LOWER_LEFT, DirectionEnum.LOWER_RIGHT);
-                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_UP, DirectionEnum.UPPER_RIGHT, DirectionEnum.UPPER_LEFT);
+                cells[0].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_DOWN, DirectionEnum.LOWER_LEFT, DirectionEnum.LOWER_RIGHT, cells);
+                cells[1].FindPossibleMovesTwinCells(DirectionEnum.DOUBLE_UP, DirectionEnum.UPPER_RIGHT, DirectionEnum.UPPER_LEFT, cells);
                 break;
         }
     }
 
-    void FindPossibleMovesTwinCells(DirectionEnum firstDir, DirectionEnum secondDir, DirectionEnum thirdDir) {
+    void FindPossibleMovesTwinCells(DirectionEnum firstDir, DirectionEnum secondDir, DirectionEnum thirdDir, List<Cell> cells) {
         if (board.HasPossibleMovement() || board.HasMatches()) return;
-        if (IsGemEqual(firstDir) != null || IsGemEqual(secondDir) != null || IsGemEqual(thirdDir) != null) {
-            board.AddPossibleMovement();
+
+        if (IsGemEqual(firstDir) is Cell firstCell && firstCell != null) {
+            cells.Add(firstCell);
+            board.AddPossibleMovement(cells);
+        } else if (IsGemEqual(secondDir) is Cell secondCell && secondCell != null) {
+            cells.Add(secondCell);
+            board.AddPossibleMovement(cells);
+        } else if (IsGemEqual(thirdDir) is Cell thirdCell && thirdCell != null) {
+            cells.Add(thirdCell);
+            board.AddPossibleMovement(cells);
         }
     }
 
@@ -164,5 +175,9 @@ public class Cell : MonoBehaviour {
 
     public void Move(DirectionEnum direction) {
         board.GetGemsToSwap(columnIndex, cellIndex, direction);
+    }
+
+    public void Punch() {
+        cellGem.GetComponent<CellGem>().Animate(CellGemAnimType.Punch);
     }
 }

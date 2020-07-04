@@ -271,7 +271,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   columnPrefab: {fileID: 5889954959930968858, guid: 03cb9ef57af755240be0a392e6d7b2b7,
     type: 3}
-  matchedCells: []
   gems:
   - sprite: {fileID: 5366341423815689845, guid: 9021f54e721d4fb41bbab621cbf52f9a,
       type: 3}
@@ -302,6 +301,7 @@ MonoBehaviour:
   finishedVerticalMatch: 0
   gridSize: 0
   possibleMovements: 0
+  possibleMovementsCells: []
   timesShuffled: 0
 --- !u!1 &519420028
 GameObject:

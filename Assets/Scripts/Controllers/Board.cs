@@ -17,10 +17,12 @@ public class Board : MonoBehaviour {
     [SerializeField] private int possibleMovements = 0;
     [SerializeField] private int timesShuffled = 0;
     private Cell[, ] boardGrid;
+    private Coroutine showPossibleMoventCoroutine = null;
     private Dimensions boardDim;
     private Dimensions cellDim;
     private LastSwap lastSwap = null;
     private List<Cell> matchedCells = new List<Cell>();
+    private List<Cell> possibleMovementsCells = new List<Cell>();
     private RectTransform rectTransform;
 
     void Start() {
@@ -77,13 +79,22 @@ public class Board : MonoBehaviour {
         return null;
     }
 
-    public void AddPossibleMovement() {
+    public void AddPossibleMovement(List<Cell> cells) {
         this.possibleMovements += 1;
         this.timesShuffled = 0;
+
+        if (this.possibleMovements == 1) {
+            this.possibleMovementsCells = this.possibleMovementsCells.Concat(cells).ToList();
+        }
     }
 
     public bool HasPossibleMovement() {
         return possibleMovements > 0;
+    }
+
+    void CleanPossibleMovement() {
+        this.possibleMovements = 0;
+        this.possibleMovementsCells.Clear();
     }
 
     public bool HasMatches() {
@@ -95,7 +106,7 @@ public class Board : MonoBehaviour {
 
         if (IsFinishedToPlace()) {
             finishedHorizontalMatch = 0;
-            possibleMovements = 0;
+            CleanPossibleMovement();
             CheckMatch(Axis.Hotizontal);
         }
     }
@@ -140,7 +151,17 @@ public class Board : MonoBehaviour {
                 ShuffleGems();
             } else {
                 canSwap = true;
+                showPossibleMoventCoroutine = StartCoroutine(ShowPossibleMovent());
             }
+        }
+    }
+
+    IEnumerator ShowPossibleMovent() {
+        yield return new WaitForSeconds(15);
+
+        while (true) {
+            yield return new WaitForSeconds(1f);
+            possibleMovementsCells.ForEach(cell => cell.Punch());
         }
     }
 
@@ -245,6 +266,7 @@ public class Board : MonoBehaviour {
     }
 
     void SwapGems(Cell cellOne, Cell cellTwo) {
+        if (showPossibleMoventCoroutine != null) StopCoroutine(showPossibleMoventCoroutine);
         GameObject CellOneGem = cellOne.cellGem;
         GameObject CellTwoGem = cellTwo.cellGem;
         finishedToPlace -= 2;

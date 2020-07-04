@@ -5,6 +5,7 @@ using UnityEngine;
 public enum CellGemAnimType {
     Destroy,
     Drop,
+    Punch,
     SimpleMove,
 }
 
@@ -12,6 +13,7 @@ public class CellGem : MonoBehaviour {
     private Cell cell;
     private float destroyAnimDuration = 0.4f;
     private float dropAnimDuration = 0.5f;
+    private float punchAnimDuration = 0.2f;
     private float simpleMoveAnimDuration = 0.3f;
 
     public void Init(Cell cell, Dimensions boardDim, CellGemAnimType movementType) {
@@ -32,6 +34,9 @@ public class CellGem : MonoBehaviour {
                 break;
             case CellGemAnimType.Drop:
                 Drop();
+                break;
+            case CellGemAnimType.Punch:
+                Punch();
                 break;
             case CellGemAnimType.SimpleMove:
                 SimpleMove();
@@ -63,6 +68,10 @@ public class CellGem : MonoBehaviour {
                         cell.FinishedToPlace();
                     });
             });
+    }
+
+    private void Punch() {
+        transform.DOPunchPosition(new Vector3(0, 5, 0), punchAnimDuration, 1, 0.2f).SetEase(Ease.Linear);
     }
 
     public static bool IsGem(string tag) {
