@@ -25,6 +25,7 @@ public class Board : MonoBehaviour {
     private List<Cell> matchedCells = new List<Cell>();
     private List<Cell> possibleMovementsCells = new List<Cell>();
     private RectTransform rectTransform;
+    private bool isGameStopped = false;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -117,7 +118,7 @@ public class Board : MonoBehaviour {
     }
 
     public void CheckMatch(Axis axis) {
-        canSwap = false;
+        SetCanSwap(false);
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < cells; j++) {
                 StartCoroutine(boardGrid[i, j].CheckMatchCoroutine(axis));
@@ -152,7 +153,7 @@ public class Board : MonoBehaviour {
             } else if (!HasPossibleMovement()) {
                 ShuffleGems();
             } else {
-                canSwap = true;
+                SetCanSwap(true);
                 showPossibleMoventCoroutine = StartCoroutine(ShowPossibleMovent());
             }
         }
@@ -251,13 +252,25 @@ public class Board : MonoBehaviour {
         return boardGrid[columnIndex, cellIndex];
     }
 
+    public void SetCanSwap(bool canSwap) {
+        this.canSwap = canSwap;
+    }
+
+    public void SetIsGameStopped(bool isGameStopped) {
+        this.isGameStopped = isGameStopped;
+    }
+
+    private bool CanSwap() {
+        return this.canSwap && !this.isGameStopped;
+    }
+
     void UndoSwap() {
         SwapGems(lastSwap.cellOne, lastSwap.cellTwo);
         lastSwap = null;
     }
 
     public void GetGemsToSwap(int columnIndex, int cellIndex, DirectionEnum direction) {
-        if (!canSwap) return;
+        if (!CanSwap()) return;
 
         Cell currentCell = boardGrid[columnIndex, cellIndex];
         Cell nextCell = GetCell(columnIndex, cellIndex, direction);
@@ -274,7 +287,7 @@ public class Board : MonoBehaviour {
         finishedToPlace -= 2;
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);
-        canSwap = false;
+        SetCanSwap(false);
     }
 
     void ShuffleGems() {
