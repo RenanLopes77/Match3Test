@@ -127,7 +127,7 @@ public class Board : MonoBehaviour {
 
     public void AddMatches(List<Cell> matches) {
         this.matchedCells = this.matchedCells.Concat(matches).ToList();
-        this.points.AddPoints(matches.Count);
+        this.points.AddPoints(matches.Count, matches);
     }
 
     public void FinishedHorizontalMatch() {
@@ -269,8 +269,8 @@ public class Board : MonoBehaviour {
 
     void SwapGems(Cell cellOne, Cell cellTwo) {
         if (showPossibleMoventCoroutine != null) StopCoroutine(showPossibleMoventCoroutine);
-        GameObject CellOneGem = cellOne.cellGem;
-        GameObject CellTwoGem = cellTwo.cellGem;
+        CellGem CellOneGem = cellOne.cellGem;
+        CellGem CellTwoGem = cellTwo.cellGem;
         finishedToPlace -= 2;
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);

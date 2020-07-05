@@ -13,6 +13,7 @@ public class CellGem : MonoBehaviour {
     private Cell cell;
     private float destroyAnimDuration = 0.4f;
     private float dropAnimDuration = 0.5f;
+    private float pointsMultiplier = 0;
     private float punchAnimDuration = 0.2f;
     private float simpleMoveAnimDuration = 0.3f;
 
@@ -20,6 +21,14 @@ public class CellGem : MonoBehaviour {
         this.cell = cell;
         transform.localPosition = new Vector3(0, boardDim.height, 0);
         Animate(movementType);
+    }
+
+    public float GetPointsMultiplier() {
+        return this.pointsMultiplier;
+    }
+
+    public void SetPointsMultiplier(float pointsMultiplier) {
+        this.pointsMultiplier = pointsMultiplier;
     }
 
     public void SetParent(Transform parent, CellGemAnimType movementType) {
