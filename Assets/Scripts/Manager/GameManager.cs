@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         this.points.AddOnReachGoalPointsCallBack(this.OnReachGoalPoints);
         this.timer.AddCountdownFinishCallBack(this.StopGame);
+        Time.timeScale = 1;
     }
 
     public void Restart() {
