@@ -1050,14 +1050,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06370a59ed29d334392772b116916ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  points: 0
-  multiplier: 20
-  currentPoints: {fileID: 1685362910}
-  goalPoints: {fileID: 454201960}
-  slider: {fileID: 358829122}
+  _Dynamic: {fileID: 99228522}
   pointsPrefab: {fileID: 8940564490585121997, guid: 153993b636ae7b44dac22de2f06aa9a1,
     type: 3}
-  _Dynamic: {fileID: 99228522}
+  slider: {fileID: 358829122}
+  currentPoints: {fileID: 1685362910}
+  goalPoints: {fileID: 454201960}
+  multiplier: 20
+  points: 0
 --- !u!1 &1285801808
 GameObject:
   m_ObjectHideFlags: 0
