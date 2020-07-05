@@ -6,6 +6,7 @@ using UnityEngine;
 public class Board : MonoBehaviour {
     [SerializeField] private GameObject columnPrefab = null;
     [SerializeField] private List<Gem> gems = new List<Gem>();
+    [SerializeField] private Points points = null;
     [SerializeField] private Vector2 padding = Vector2.zero;
     [SerializeField] private bool canSwap = false;
     [SerializeField] private int cells = 0;
@@ -126,6 +127,7 @@ public class Board : MonoBehaviour {
 
     public void AddMatches(List<Cell> matches) {
         this.matchedCells = this.matchedCells.Concat(matches).ToList();
+        this.points.AddPoints(matches.Count, matches);
     }
 
     public void FinishedHorizontalMatch() {
@@ -267,8 +269,8 @@ public class Board : MonoBehaviour {
 
     void SwapGems(Cell cellOne, Cell cellTwo) {
         if (showPossibleMoventCoroutine != null) StopCoroutine(showPossibleMoventCoroutine);
-        GameObject CellOneGem = cellOne.cellGem;
-        GameObject CellTwoGem = cellTwo.cellGem;
+        CellGem CellOneGem = cellOne.cellGem;
+        CellGem CellTwoGem = cellTwo.cellGem;
         finishedToPlace -= 2;
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);

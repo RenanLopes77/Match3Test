@@ -9,7 +9,7 @@ public class Cell : MonoBehaviour {
     private Board board;
     private Dimensions boardDim;
     private Dimensions cellDim;
-    public GameObject cellGem;
+    public CellGem cellGem;
     public bool isCellEmpty = false;
     public int cellIndex;
     public int columnIndex;
@@ -45,15 +45,18 @@ public class Cell : MonoBehaviour {
 
     public void AddCellGem() {
         isCellEmpty = false;
-        this.cellGem = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
-        this.cellGem.GetComponent<CellGem>().Init(this, boardDim, CellGemAnimType.Drop);
-        SetGem(cellGem);
+
+        GameObject cellGemGameObject = Instantiate(cellGemPrefab, Vector3.zero, Quaternion.identity, transform);
+        this.cellGem = cellGemGameObject.GetComponent<CellGem>();
+        this.cellGem.Init(this, boardDim, CellGemAnimType.Drop);
+        SetGem();
     }
 
-    void SetGem(GameObject cellGem) {
+    void SetGem() {
         Gem gem = board.GetGem();
-        cellGem.GetComponent<Image>().sprite = gem.sprite;
-        cellGem.tag = gem.gemType.ToString();
+        this.cellGem.SetPointsMultiplier(gem.pointsMultiplier);
+        this.cellGem.gameObject.GetComponent<Image>().sprite = gem.sprite;
+        this.cellGem.tag = gem.gemType.ToString();
     }
 
     public void FinishedToPlace() {
@@ -163,14 +166,14 @@ public class Cell : MonoBehaviour {
     }
 
     public void Destroy() {
-        cellGem.GetComponent<CellGem>().Animate(CellGemAnimType.Destroy);
+        cellGem.Animate(CellGemAnimType.Destroy);
         isCellEmpty = true;
     }
 
-    public void SetCellGem(GameObject cellGem, CellGemAnimType movementType) {
+    public void SetCellGem(CellGem cellGem, CellGemAnimType movementType) {
         isCellEmpty = false;
         this.cellGem = cellGem;
-        this.cellGem.GetComponent<CellGem>().SetParent(transform, movementType);
+        this.cellGem.SetParent(transform, movementType);
     }
 
     public void Move(DirectionEnum direction) {
@@ -178,6 +181,6 @@ public class Cell : MonoBehaviour {
     }
 
     public void Punch() {
-        cellGem.GetComponent<CellGem>().Animate(CellGemAnimType.Punch);
+        cellGem.Animate(CellGemAnimType.Punch);
     }
 }

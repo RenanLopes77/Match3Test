@@ -17,4 +17,5 @@ public enum GemEnum {
 public class Gem {
   public Sprite sprite;
   public GemEnum gemType;
+  public float pointsMultiplier;
 }
