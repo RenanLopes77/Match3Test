@@ -14,11 +14,11 @@ public class GameManager : MonoBehaviour {
     }
 
     void ResumeGame() {
-        board.SetCanSwap(true);
+        board.SetIsGameStopped(false);
     }
 
     void StopGame() {
-        board.SetCanSwap(false);
+        board.SetIsGameStopped(true);
     }
 
     void OnReachGoalPoints() {

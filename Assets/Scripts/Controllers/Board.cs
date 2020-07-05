@@ -25,6 +25,7 @@ public class Board : MonoBehaviour {
     private List<Cell> matchedCells = new List<Cell>();
     private List<Cell> possibleMovementsCells = new List<Cell>();
     private RectTransform rectTransform;
+    private bool isGameStopped = false;
 
     void Start() {
         rectTransform = GetComponent<RectTransform>();
@@ -255,13 +256,21 @@ public class Board : MonoBehaviour {
         this.canSwap = canSwap;
     }
 
+    public void SetIsGameStopped(bool isGameStopped) {
+        this.isGameStopped = isGameStopped;
+    }
+
+    private bool CanSwap() {
+        return this.canSwap && !this.isGameStopped;
+    }
+
     void UndoSwap() {
         SwapGems(lastSwap.cellOne, lastSwap.cellTwo);
         lastSwap = null;
     }
 
     public void GetGemsToSwap(int columnIndex, int cellIndex, DirectionEnum direction) {
-        if (!canSwap) return;
+        if (!CanSwap()) return;
 
         Cell currentCell = boardGrid[columnIndex, cellIndex];
         Cell nextCell = GetCell(columnIndex, cellIndex, direction);
