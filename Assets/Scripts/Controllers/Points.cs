@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,10 +9,13 @@ public class Points : MonoBehaviour {
     [SerializeField] private GameObject _Dynamic = null;
     [SerializeField] private GameObject pointsPrefab = null;
     [SerializeField] private Slider slider = null;
-    [SerializeField] private TMP_Text currentPoints = null;
-    [SerializeField] private TMP_Text goalPoints = null;
+    [SerializeField] private TMP_Text currentPointsText = null;
+    [SerializeField] private TMP_Text goalPointsText = null;
     [SerializeField] private int multiplier = 20;
     [SerializeField] private int points = 0;
+    private int goalPoints = 0;
+    private int stepPoints = 0;
+    private List<Action> onReachGoalPointsCallbacks = new List<Action>();
 
     private void Start() {
         SetGoalValues();
@@ -22,27 +26,42 @@ public class Points : MonoBehaviour {
         this.points += points;
         UpdatePoints();
         StartCoroutine(DisplayPoints(GetCommonPosition(cells), points));
+        OnReachGoalPoints();
+    }
+
+    public void AddOnReachGoalPointsCallBack(Action action) {
+        this.onReachGoalPointsCallbacks.Add(action);
     }
 
     void UpdatePoints() {
         this.slider.value = this.points;
-        this.currentPoints.SetText(FormatIntToString(this.points));
+        this.currentPointsText.SetText(FormatIntToString(this.points));
     }
 
     void SetGoalValues() {
-        int goalValue = GetGoalValue();
+        SetGoalValue();
         this.slider.minValue = this.points;
-        this.slider.maxValue = goalValue;
-        this.goalPoints.SetText(FormatIntToString(goalValue));
-        this.currentPoints.SetText(FormatIntToString(this.points));
+        this.slider.maxValue = this.goalPoints;
+        this.goalPointsText.SetText(FormatIntToString(this.goalPoints));
+        this.currentPointsText.SetText(FormatIntToString(this.points));
+    }
+
+    void OnReachGoalPoints() {
+        if (this.points >= this.goalPoints) {
+            SetGoalValues();
+            this.onReachGoalPointsCallbacks.ForEach(callBack => {
+                callBack();
+            });
+        }
     }
 
     string FormatIntToString(int number) {
         return number.ToString("n0");
     }
 
-    int GetGoalValue() {
-        return 25 * 1000;
+    void SetGoalValue() {
+        this.stepPoints += 5000;
+        this.goalPoints += this.stepPoints;
     }
 
     Vector3 GetCommonPosition(List<Cell> cells) {

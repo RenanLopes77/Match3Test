@@ -117,7 +117,7 @@ public class Board : MonoBehaviour {
     }
 
     public void CheckMatch(Axis axis) {
-        canSwap = false;
+        SetCanSwap(false);
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < cells; j++) {
                 StartCoroutine(boardGrid[i, j].CheckMatchCoroutine(axis));
@@ -152,7 +152,7 @@ public class Board : MonoBehaviour {
             } else if (!HasPossibleMovement()) {
                 ShuffleGems();
             } else {
-                canSwap = true;
+                SetCanSwap(true);
                 showPossibleMoventCoroutine = StartCoroutine(ShowPossibleMovent());
             }
         }
@@ -251,6 +251,10 @@ public class Board : MonoBehaviour {
         return boardGrid[columnIndex, cellIndex];
     }
 
+    public void SetCanSwap(bool canSwap) {
+        this.canSwap = canSwap;
+    }
+
     void UndoSwap() {
         SwapGems(lastSwap.cellOne, lastSwap.cellTwo);
         lastSwap = null;
@@ -274,7 +278,7 @@ public class Board : MonoBehaviour {
         finishedToPlace -= 2;
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);
-        canSwap = false;
+        SetCanSwap(false);
     }
 
     void ShuffleGems() {
