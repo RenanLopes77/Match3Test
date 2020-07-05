@@ -42,7 +42,7 @@ public class Points : MonoBehaviour {
     }
 
     int GetGoalValue() {
-        return 10000;
+        return 25 * 1000;
     }
 
     Vector3 GetCommonPosition(List<Cell> cells) {
