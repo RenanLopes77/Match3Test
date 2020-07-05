@@ -28,6 +28,8 @@ public class Board : MonoBehaviour {
     private bool isGameStopped = false;
 
     void Start() {
+        this.cells = PlayerPrefs.GetInt("CellAmount", this.cells);
+        this.columns = PlayerPrefs.GetInt("ColumnAmount", this.columns);
         rectTransform = GetComponent<RectTransform>();
         boardDim = new Dimensions(Mathf.Abs(rectTransform.rect.height - padding.y), Mathf.Abs(rectTransform.rect.width - padding.x));
         cellDim = new Dimensions(Mathf.Abs(boardDim.height) / cells, Mathf.Abs(boardDim.width) / columns);

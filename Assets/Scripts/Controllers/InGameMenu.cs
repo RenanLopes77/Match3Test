@@ -4,9 +4,10 @@ using TMPro;
 using UnityEngine;
 
 public class InGameMenu : MonoBehaviour {
-    [SerializeField] private TMP_Text header = null;
-    [SerializeField] private List<GameObject> onPauseGameObjects = new List<GameObject>();
     [SerializeField] private List<GameObject> onLoseGameObjects = new List<GameObject>();
+    [SerializeField] private List<GameObject> onPauseGameObjects = new List<GameObject>();
+    [SerializeField] private Scene scene = null;
+    [SerializeField] private TMP_Text header = null;
 
     public void OnPause(bool isPaused) {
         if (isPaused) {
@@ -18,6 +19,10 @@ public class InGameMenu : MonoBehaviour {
     public void OnLose() {
         header.SetText("You lose");
         SetGameObjectsActive(true, onLoseGameObjects);
+    }
+
+    public void OnClickHome() {
+        this.scene.LoadScene(SceneNames.Menu);
     }
 
     private void SetGameObjectsActive(bool isActive, List<GameObject> gos) {
