@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 631afc16476d45745a257ce19be1f6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audio: {fileID: 0}
   columnPrefab: {fileID: 5889954959930968858, guid: 03cb9ef57af755240be0a392e6d7b2b7,
     type: 3}
   gems:
