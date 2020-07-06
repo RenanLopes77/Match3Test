@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 44ae4f62106f2804ab86f18148a29cfb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cellGemPrefab: {instanceID: 0}
+  - board: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
