@@ -152,7 +152,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1.000
+  m_text: 5.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c165fa442b517548a3dfd56b426adec, type: 2}
   m_sharedMaterial: {fileID: 8908266326191890743, guid: 3c165fa442b517548a3dfd56b426adec,
@@ -419,7 +419,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3601162476543622859}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -445,6 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06370a59ed29d334392772b116916ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audio: {fileID: 0}
   _Dynamic: {fileID: 0}
   pointsPrefab: {fileID: 8940564490585121997, guid: 153993b636ae7b44dac22de2f06aa9a1,
     type: 3}

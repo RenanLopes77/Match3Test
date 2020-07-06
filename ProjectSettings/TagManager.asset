@@ -15,6 +15,7 @@ TagManager:
   - Orange
   - Star
   - CellGem
+  - GameAudio
   layers:
   - Default
   - TransparentFX

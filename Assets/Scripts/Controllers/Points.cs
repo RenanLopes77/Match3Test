@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Points : MonoBehaviour {
+    [SerializeField] private Audio audio = null;
     [SerializeField] private GameObject _Dynamic = null;
     [SerializeField] private GameObject pointsPrefab = null;
     [SerializeField] private Slider slider = null;
@@ -33,6 +34,10 @@ public class Points : MonoBehaviour {
         this.onReachGoalPointsCallbacks.Add(action);
     }
 
+    public string GetPoints() {
+        return FormatIntToString(this.points);
+    }
+
     void UpdatePoints() {
         this.slider.value = this.points;
         this.currentPointsText.SetText(FormatIntToString(this.points));
@@ -48,6 +53,7 @@ public class Points : MonoBehaviour {
 
     void OnReachGoalPoints() {
         if (this.points >= this.goalPoints) {
+            this.audio.PlayclearSound();
             SetGoalValues();
             this.onReachGoalPointsCallbacks.ForEach(callBack => {
                 callBack();

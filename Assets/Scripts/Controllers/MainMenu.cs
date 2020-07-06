@@ -15,8 +15,8 @@ public class MainMenu : MonoBehaviour {
     private int columnAmount = 6;
 
     private void Start() {
-        this.cellText.SetText(this.cellAmount.ToString());
-        this.columnText.SetText(this.columnAmount.ToString());
+        SetCellValue();
+        SetColumnValue();
         Time.timeScale = 1;
     }
 
@@ -27,17 +27,25 @@ public class MainMenu : MonoBehaviour {
     public void IncreaseCell(int increase) {
         if (CanIncrease(this.cellAmount + increase)) {
             this.cellAmount += increase;
-            this.cellText.SetText(this.cellAmount.ToString());
-            PlayerPrefs.SetInt("CellAmount", this.cellAmount);
+            SetCellValue();
         }
+    }
+
+    private void SetCellValue() {
+        this.cellText.SetText(this.cellAmount.ToString());
+        PlayerPrefs.SetInt("CellAmount", this.cellAmount);
     }
 
     public void IncreaseColumn(int increase) {
         if (CanIncrease(this.columnAmount + increase)) {
             this.columnAmount += increase;
-            this.columnText.SetText(this.columnAmount.ToString());
-            PlayerPrefs.SetInt("ColumnAmount", this.columnAmount);
+            SetColumnValue();
         }
+    }
+
+    private void SetColumnValue() {
+        this.columnText.SetText(this.columnAmount.ToString());
+        PlayerPrefs.SetInt("ColumnAmount", this.columnAmount);
     }
 
     public void OnClickPlay() {
