@@ -34,8 +34,8 @@ public class Points : MonoBehaviour {
         this.onReachGoalPointsCallbacks.Add(action);
     }
 
-    public int GetPoints() {
-        return points;
+    public string GetPoints() {
+        return FormatIntToString(this.points);
     }
 
     void UpdatePoints() {

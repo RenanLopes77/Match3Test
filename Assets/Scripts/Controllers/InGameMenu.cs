@@ -16,7 +16,7 @@ public class InGameMenu : MonoBehaviour {
         SetGameObjectsActive(isPaused, onPauseGameObjects);
     }
 
-    public void OnLose(int points) {
+    public void OnLose(string points) {
         header.SetText($"You lose \n {points}");
         SetGameObjectsActive(true, onLoseGameObjects);
     }
