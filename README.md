@@ -25,6 +25,8 @@
 
 ## 🚀 Builds
 
+> Requires Android 8 or higher
+
 - [1.0.0](Builds/Match3_v1.0.0.apk)
 
 ## 🎞️ Gameplay (Gifs)
