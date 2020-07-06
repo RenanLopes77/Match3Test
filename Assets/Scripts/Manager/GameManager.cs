@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 
     void StopGame() {
         this.board.SetIsGameStopped(true);
-        this.inGameMenu.OnLose();
+        this.inGameMenu.OnLose(this.points.GetPoints());
     }
 
     void OnReachGoalPoints() {

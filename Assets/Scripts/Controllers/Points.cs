@@ -34,6 +34,10 @@ public class Points : MonoBehaviour {
         this.onReachGoalPointsCallbacks.Add(action);
     }
 
+    public int GetPoints() {
+        return points;
+    }
+
     void UpdatePoints() {
         this.slider.value = this.points;
         this.currentPointsText.SetText(FormatIntToString(this.points));
