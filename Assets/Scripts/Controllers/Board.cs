@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
+    [SerializeField] private Audio audio = null;
     [SerializeField] private GameObject columnPrefab = null;
     [SerializeField] private List<Gem> gems = new List<Gem>();
     [SerializeField] private Points points = null;
@@ -289,6 +290,7 @@ public class Board : MonoBehaviour {
         finishedToPlace -= 2;
         cellOne.SetCellGem(CellTwoGem, CellGemAnimType.SimpleMove);
         cellTwo.SetCellGem(CellOneGem, CellGemAnimType.SimpleMove);
+        this.audio.PlaySwapSound();
         SetCanSwap(false);
     }
 
